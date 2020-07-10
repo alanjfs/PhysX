@@ -164,6 +164,10 @@ class CMakePreset:
         elif self.targetPlatform == 'linuxAarch64':
             outString = outString + '-G \"Unix Makefiles\"'
 
+        # Defaults to Visual Studio, which is not supported by Emscripten
+        elif self.targetPlatform.startswith('win') and self.compiler == 'emscripten':
+            outString = outString + '-G "Ninja"'
+
         if self.targetPlatform == 'win32':
             outString = outString + ' -AWin32'
             outString = outString + ' -DTARGET_BUILD_PLATFORM=windows'
@@ -294,10 +298,27 @@ class CMakePreset:
                 os.environ['PM_CMakeModules_PATH'] + '/ios/ios.toolchain.cmake\"'
             outString = outString + ' -DPX_OUTPUT_ARCH=arm'
             return outString
+
         elif self.targetPlatform == 'emscripten':
+            # EMSDK <= 1.38.x
+            emscripten = os.environ.get('EMSCRIPTEN')
+            
+            # EMSDK >= 1.39.x
+            if not emscripten:
+                emscripten = os.environ.get('EMSDK')
+
+                if not emscripten:
+                    raise EnvironmentError(
+                        'Could not find EMSDK, ensure you\'ve '
+                        'setup the environment correctly; '
+                        'typically by calling emsdk_env'
+                    )
+
+                emscripten = os.path.join(emscripten, 'upstream', 'emscripten')
+
             outString = outString + ' -DTARGET_BUILD_PLATFORM=emscripten'
             outString = outString + ' -DCMAKE_TOOLCHAIN_FILE=\"' + \
-                os.path.join(os.environ['EMSCRIPTEN'] + '/cmake/Modules/Platform/Emscripten.cmake\"')
+                os.path.join(emscripten + '/cmake/Modules/Platform/Emscripten.cmake\"')
             return outString
         return ''
 
