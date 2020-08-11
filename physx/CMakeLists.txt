@@ -91,12 +91,7 @@ if(PX_CMAKE_SUPPRESS_REGENERATION)
     set(CMAKE_SUPPRESS_REGENERATION TRUE)
 endif()
 
-### Set PHYSX_ROOT_DIR to PROJECT_SOURCE_DIR
-if(DEFINED PHYSX_ROOT_DIR)
-    message(WARNING "PHYSX_ROOT_DIR is externally defined, but it will be overwritten in this CMakeLists. DEPRECATED")
-    message("PHYSX_ROOT_DIR (externally set --not used--): ${PHYSX_ROOT_DIR}")
-    message("PHYSX_ROOT_DIR (currently set): ${PROJECT_SOURCE_DIR}")
-endif()
+# We don't need PHYSX_ROOT_DIR anymore with a proper CMake project
 set(PHYSX_ROOT_DIR ${PROJECT_SOURCE_DIR})
 
 ### Set TARGET_BUILD_PLATFORM using CMAKE_SYSTEM_NAME
@@ -108,7 +103,7 @@ if(DEFINED TARGET_BUILD_PLATFORM)
        TARGET_BUILD_PLATFORM STREQUAL "ios")
        message(FATAL_ERROR "switch, playstation and ios builds are not valid because have not been tested. Use official repository for these.")
     endif()
-    message(INFO "TARGET_BUILD_PLATFORM (externally set --not used--): ${TARGET_BUILD_PLATFORM}")
+    message(FATAL_ERROR "TARGET_BUILD_PLATFORM was externally set and *not used*: ${TARGET_BUILD_PLATFORM}")
 endif()
 
 set(TARGET_BUILD_PLATFORM "")
@@ -120,6 +115,8 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     set(TARGET_BUILD_PLATFORM "mac")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Android")
     set(TARGET_BUILD_PLATFORM "android")
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
+    set(TARGET_BUILD_PLATFORM "emscripten")
 endif()
 
 ### Set CMake folders
