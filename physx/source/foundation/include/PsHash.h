@@ -66,11 +66,11 @@ PX_FORCE_INLINE uint32_t hash(const uint32_t key)
 	return uint32_t(k);
 }
 
-// size_t in emscripten is an unsigned long
-PX_FORCE_INLINE uint32_t hash(const unsigned long key)
-{
-	return hash(uint32_t(key));
-}
+// // size_t in emscripten is an unsigned long
+// PX_FORCE_INLINE uint32_t hash(const unsigned long key)
+// {
+// 	return hash(uint32_t(key));
+// }
 
 PX_FORCE_INLINE uint32_t hash(const int32_t key)
 {
