@@ -2185,9 +2185,8 @@ PxU32 setupSolverConstraintStep(
 		if(isKinematic0)
 			s.velTarget -= vel0;
 		if(isKinematic1)
-			s.velMultiplier += vel1;
+			s.velTarget += vel1;
 
-		
 
 		if (c.flags & Px1DConstraintFlag::eOUTPUT_FORCE)
 			s.flags |= DY_SC_FLAG_OUTPUT_FORCE;
